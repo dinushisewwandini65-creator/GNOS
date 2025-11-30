@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Person Registration | GNOS</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #dbeafe, #eff6ff);
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #1e3a8a;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    form {
+      max-width: 700px;
+      background: #fff;
+      margin: 40px auto;
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #1e3a8a;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+      color: #1e3a8a;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #93c5fd;
+      border-radius: 6px;
+      font-size: 15px;
+      transition: border-color 0.2s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #2563eb;
+      outline: none;
+    }
+
+    .gender-group {
+      display: flex;
+      gap: 20px;
+      margin-top: 5px;
+    }
+
+    button {
+      margin-top: 25px;
+      width: 100%;
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #1e40af;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 15px;
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <header>👥 Person Registration - GNOS</header>
+
+  <form id="personForm">
+    <h2>Enter Personal Details</h2>
+
+    <label for="fullname">Full Name</label>
+    <input type="text" id="fullname" name="fullname" placeholder="Enter full name" required />
+
+    <label for="nic">NIC Number</label>
+    <input type="text" id="nic" name="nic" placeholder="Enter NIC number" required />
+
+    <label for="dob">Date of Birth</label>
+    <input type="date" id="dob" name="dob" required />
+
+    <label>Gender</label>
+    <div class="gender-group">
+      <label><input type="radio" name="gender" value="Male" required /> Male</label>
+      <label><input type="radio" name="gender" value="Female" required /> Female</label>
+      <label><input type="radio" name="gender" value="Other" required /> Other</label>
+    </div>
+
+    <label for="address">Permanent Address</label>
+    <textarea id="address" name="address" rows="3" placeholder="Enter your address" required></textarea>
+
+    <label for="district">District</label>
+    <select id="district" name="district" required>
+      <option value="">-- Select District --</option>
+      <option>Colombo</option>
+      <option>Gampaha</option>
+      <option>Kalutara</option>
+      <option>Kandy</option>
+      <option>Matale</option>
+      <option>Nuwara Eliya</option>
+      <option>Galle</option>
+      <option>Matara</option>
+      <option>Hambantota</option>
+      <option>Kurunegala</option>
+      <option>Puttalam</option>
+      <option>Anuradhapura</option>
+      <option>Polonnaruwa</option>
+      <option>Badulla</option>
+      <option>Monaragala</option>
+      <option>Ratnapura</option>
+      <option>Kegalle</option>
+      <option>Trincomalee</option>
+      <option>Batticaloa</option>
+      <option>Ampara</option>
+      <option>Jaffna</option>
+      <option>Killinochchi</option>
+      <option>Mannar</option>
+      <option>Vavuniya</option>
+      <option>Mullaitivu</option>
+    </select>
+
+    <label for="nationality">Nationality</label>
+    <input type="text" id="nationality" name="nationality" placeholder="Enter nationality" required />
+
+    <label for="contact">Contact Number</label>
+    <input type="tel" id="contact" name="contact" placeholder="07X XXXXXXX" pattern="[0-9]{10}" required />
+
+    <button type="submit">Submit Registration</button>
+    <a href="final1.html#services" class="back-link">Back to Services</a>
+  </form>
+
+  <!-- Firebase Connection -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyATq733SgOlw3uX3hV2rNx8skuxm7aeppA",
+      authDomain: "login-page-new-3780c.firebaseapp.com",
+      databaseURL: "https://login-page-new-3780c-default-rtdb.firebaseio.com/",
+      projectId: "login-page-new-3780c",
+      storageBucket: "login-page-new-3780c.appspot.com",
+      messagingSenderId: "106026228924",
+      appId: "1:106026228924:web:3e14f52a3fe928c06644b9"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth();
+
+    signInAnonymously(auth)
+  .then(() => {
+    console.log('Signed in anonymously with UID:', auth.currentUser.uid);
+  })
+  .catch(err => console.error('Anonymous login error:', err));
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // Allow form submission now with user.uid available
+    // Handle form submission
+    document.getElementById("personForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const form = e.target;
+
+      const personData = {
+        fullName: form.fullname.value,
+        nic: form.nic.value,
+        dob: form.dob.value,
+        gender: form.gender.value,
+        address: form.address.value,
+        district: form.district.value,
+        nationality: form.nationality.value,
+        contact: form.contact.value,
+        timestamp: new Date().toISOString()
+      };
+      const userId = auth.currentUser.uid;
+    const newRef = push(ref(db, "person_registrations"));
+       
+    await set(newRef, personData);
+    
+      try {
+        
+        await set(newRef, personData);
+        alert("✅ Registration saved successfully!");
+        form.reset();
+        // Redirect to person_registration page after saving
+        window.location.href = "person_registration.html";
+      } catch (error) {
+        alert("❌ Error: " + error.message);
+        console.error(error);
+      }
+      
+    });
+
+      } else {
+    // Inform user or retry sign-in
+     alert("User not authenticated. Try signing in again.");
+  }
+});
+    
+  </script>
+</body>
+</html>
+
+

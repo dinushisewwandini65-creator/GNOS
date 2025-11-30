@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>My Profile - GNOS</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #f5f7ff;
+      margin: 0;
+    }
+    header {
+      background: linear-gradient(135deg, #1e40af, #2563eb);
+      color: white;
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 { margin: 0; font-size: 1.4rem; }
+    .profile-container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 30px 40px;
+    }
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 20px;
+    }
+    .profile-header img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #2563eb;
+    }
+    .profile-header h2 { margin: 0; font-size: 1.6rem; color: #1e3a8a; }
+    .profile-section { margin-top: 25px; }
+    .profile-section h3 {
+      color: #1e40af;
+      border-left: 4px solid #2563eb;
+      padding-left: 8px;
+      margin-bottom: 10px;
+    }
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px 30px;
+    }
+    .profile-grid label { font-weight: 600; color: #1e293b; }
+    .profile-grid .value {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+    }
+    .edit-input {
+      display: none;
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      box-sizing: border-box;
+      font-size: 15px;
+    }
+    .profile-actions { margin-top: 30px; display:flex; gap: 15px; align-items:center; }
+    .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+    .btn.primary { background: #2563eb; color: white; }
+    .btn.outline { border: 2px solid #2563eb; color: #2563eb; background: white; }
+    .btn.link { background: transparent; color: #2563eb; padding: 8px 12px; border-radius: 6px; border: none; font-weight: 600; text-decoration: underline; }
+    .hidden { display: none; }
+    /* Modal backdrop and content */
+    #passwordModal { position: fixed; top:0; left:0; width:100%; height:100%; display:flex; justify-content:center; align-items:center; z-index:1000; opacity:0; pointer-events:none; transition:opacity 0.3s ease; }
+    #passwordModal.show { opacity:1; pointer-events:all; }
+    .modal-backdrop { position:absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); }
+    .modal-content {
+      position: relative; background:#fff; padding:25px 30px; border-radius:12px; max-width:400px; width:90%; z-index:10; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      display:flex; flex-direction:column; gap:12px; transform: translateY(-30px); transition: transform 0.3s ease;
+    }
+    #passwordModal.show .modal-content { transform: translateY(0); }
+    .modal-close { position:absolute; top:12px; right:15px; font-size:22px; font-weight:bold; cursor:pointer; color:#2563eb; }
+    .modal-input { width:100%; padding:8px 12px; border-radius:6px; border:1px solid #cbd5e1; font-size:15px; box-sizing:border-box; }
+    .modal-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:10px; }
+    #previewPhoto { display:none; width:120px; height:120px; border-radius:50%; margin-top:10px; object-fit:cover; }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Grama Niladhari Online Services - GNOS</h1>
+    <a href="final1.html" class="btn outline">🏠 Home</a>
+  </header>
+
+  <main>
+    <div class="profile-container">
+      <!-- Profile header -->
+      <div class="profile-header">
+        <img src="default_user.png" alt="Profile Photo" id="profilePhoto">
+        <div>
+          <h2 id="displayName">Grama Niladhari Officer use only</h2>
+          <p id="displayRole">Grama Niladhari</p>
+        </div>
+      </div>
+
+      <!-- Personal Information (view mode) -->
+      <div class="profile-section" id="personalSection">
+        <h3>Personal Information</h3>
+        <div class="profile-grid">
+          <label>Full Name:</label><div class="value" id="v_fullName">Enter your full name</div>
+          <label>NIC Number:</label><div class="value" id="v_nic">Enter your NIC number</div>
+          <label>Email:</label><div class="value" id="v_email">Enter your email</div>
+          <label>Phone:</label><div class="value" id="v_phone">Enter your TP no</div>
+          <label>Address:</label><div class="value" id="v_address">Enter your address</div>
+          <label>Province:</label><div class="value" id="v_province">Enter your province</div>
+        </div>
+      </div>
+
+      <!-- Office Information (view mode) -->
+      <div class="profile-section" id="officeSection">
+        <h3>Office Information</h3>
+        <div class="profile-grid">
+          <label>GN Division:</label><div class="value" id="v_gnDivision">Enter your GN division</div>
+          <label>Division Code:</label><div class="value" id="v_divCode">Enter your Division code</div>
+          <label>District:</label><div class="value" id="v_district">Enter your district</div>
+          <label>Office Contact:</label><div class="value" id="v_officeContact">Enter your office TP no</div>
+        </div>
+      </div>
+
+      <!-- Account Settings (view mode) -->
+      <div class="profile-section" id="accountSection">
+        <h3>Account Settings</h3>
+        <div class="profile-grid">
+          <label>Username:</label><div class="value" id="v_username">Enter your username</div>
+          <label>Last Login:</label><div class="value" id="v_lastLogin">Last login date & time</div>
+        </div>
+      </div>
+
+      <!-- Hidden Edit Form fields -->
+      <div class="profile-section hidden" id="editSection">
+        <h3>Edit Profile</h3>
+        <div class="profile-grid">
+          <label>Profile Photo:</label>
+          <input class="edit-input" id="e_profilePhoto" type="file" accept="image/*">
+          <img id="previewPhoto" src="">
+
+          <label>Full Name:</label><input class="edit-input" id="e_fullName" type="text">
+          <label>NIC Number:</label><input class="edit-input" id="e_nic" type="text">
+          <label>Email:</label><input class="edit-input" id="e_email" type="email">
+          <label>Phone:</label><input class="edit-input" id="e_phone" type="text">
+          <label>Address:</label><input class="edit-input" id="e_address" type="text">
+          <label>Province:</label><input class="edit-input" id="e_province" type="text">
+
+          <label>GN Division:</label><input class="edit-input" id="e_gnDivision" type="text">
+          <label>Division Code:</label><input class="edit-input" id="e_divCode" type="text">
+          <label>District:</label><input class="edit-input" id="e_district" type="text">
+          <label>Office Contact:</label><input class="edit-input" id="e_officeContact" type="text">
+
+          <label>Username:</label><input class="edit-input" id="e_username" type="text">
+          <label>Last Login:</label><input class="edit-input" id="e_lastLogin" type="text">
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="profile-actions">
+        <button class="btn primary" id="editBtn">Edit Profile</button>
+        <button class="btn primary hidden" id="saveBtn">Save Changes</button>
+        <button class="btn outline" id="cancelBtn" style="display:none;">Cancel</button>
+        <button class="btn outline" id="changePasswordBtn">Change Password</button>
+        <a href="index.html" class="btn">Logout</a>
+      </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="passwordModal" class="hidden">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <span id="closeModal" class="modal-close">&times;</span>
+        <h3>Change Password</h3>
+        <label>Current Password:</label>
+        <input type="password" id="currentPwd" class="modal-input" placeholder="Enter current password">
+        <label>New Password:</label>
+        <input type="password" id="newPwd" class="modal-input" placeholder="Enter new password">
+        <div class="modal-actions">
+          <button id="cancelPwdBtn" class="btn outline">Cancel</button>
+          <button id="submitPwdBtn" class="btn primary">Change</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Firebase + App Logic (Firestore) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      EmailAuthProvider,
+      reauthenticateWithCredential,
+      updatePassword,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+    // Firebase config (you provided)
+    const firebaseConfig = {
+      apiKey: "AIzaSyATq733SgOlw3uX3hV2rNx8skuxm7aeppA",
+      authDomain: "login-page-new-3780c.firebaseapp.com",
+      projectId: "login-page-new-3780c",
+      storageBucket: "login-page-new-3780c.appspot.com",
+      messagingSenderId: "106026228924",
+      appId: "1:106026228924:web:3e14f52a3fe928c06644b9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // Elements references (view)
+    const fieldsView = {
+      fullName: document.getElementById('v_fullName'),
+      nic: document.getElementById('v_nic'),
+      email: document.getElementById('v_email'),
+      phone: document.getElementById('v_phone'),
+      address: document.getElementById('v_address'),
+      province: document.getElementById('v_province'),
+      gnDivision: document.getElementById('v_gnDivision'),
+      divCode: document.getElementById('v_divCode'),
+      district: document.getElementById('v_district'),
+      officeContact: document.getElementById('v_officeContact'),
+      username: document.getElementById('v_username'),
+      lastLogin: document.getElementById('v_lastLogin'),
+      displayName: document.getElementById('displayName'),
+      displayRole: document.getElementById('displayRole'),
+      profilePhoto: document.getElementById('profilePhoto')
+    };
+
+    // Elements references (edit)
+    const fieldsEdit = {
+      fullName: document.getElementById('e_fullName'),
+      nic: document.getElementById('e_nic'),
+      email: document.getElementById('e_email'),
+      phone: document.getElementById('e_phone'),
+      address: document.getElementById('e_address'),
+      province: document.getElementById('e_province'),
+      gnDivision: document.getElementById('e_gnDivision'),
+      divCode: document.getElementById('e_divCode'),
+      district: document.getElementById('e_district'),
+      officeContact: document.getElementById('e_officeContact'),
+      username: document.getElementById('e_username'),
+      lastLogin: document.getElementById('e_lastLogin')
+    };
+
+    const editBtn = document.getElementById('editBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const editSection = document.getElementById('editSection');
+    const personalSection = document.getElementById('personalSection');
+    const officeSection = document.getElementById('officeSection');
+    const accountSection = document.getElementById('accountSection');
+
+    // Password modal elements
+    const passwordModal = document.getElementById('passwordModal');
+    const currentPwdInput = document.getElementById('currentPwd');
+    const newPwdInput = document.getElementById('newPwd');
+    const cancelPwdBtn = document.getElementById('cancelPwdBtn');
+    const submitPwdBtn = document.getElementById('submitPwdBtn');
+    const closeModal = document.getElementById('closeModal');
+    const changePasswordBtn = document.getElementById('changePasswordBtn');
+
+    // Photo preview
+    const profilePhotoInput = document.getElementById('e_profilePhoto');
+    const previewPhoto = document.getElementById('previewPhoto');
+
+    // Utility: safe read of Firestore doc
+    async function loadProfile(userId) {
+      try {
+        const docRef = doc(db, 'users', userId);
+        const snap = await getDoc(docRef);
+        if (!snap.exists()) {
+          // no data yet
+          console.warn('No profile doc for', userId);
+          return;
+        }
+        const data = snap.data();
+
+        // populate view fields (if present)
+        for (const key in fieldsView) {
+          if (data[key] !== undefined && fieldsView[key]) {
+            // profilePhoto is an <img> element, set src
+            if (key === 'profilePhoto' || key === 'photoURL') continue;
+            fieldsView[key].textContent = data[key];
+          }
+        }
+
+        if (data.fullName) fieldsView.displayName.textContent = data.fullName;
+        if (data.gnDivision) fieldsView.displayRole.textContent = "Grama Niladhari - " + data.gnDivision;
+        if (data.photoURL) fieldsView.profilePhoto.src = data.photoURL;
+
+        // populate edit inputs
+        for (const key in fieldsEdit) {
+          if (data[key] !== undefined && fieldsEdit[key]) fieldsEdit[key].value = data[key];
+        }
+
+        // set preview image if photoURL exists
+        if (data.photoURL) {
+          previewPhoto.src = data.photoURL;
+          previewPhoto.style.display = 'block';
+        } else {
+          previewPhoto.style.display = 'none';
+        }
+      } catch (err) {
+        console.error('Error loading profile:', err);
+      }
+    }
+
+    function enterEditMode() {
+      personalSection.style.display = "none";
+      officeSection.style.display = "none";
+      accountSection.style.display = "none";
+      editSection.classList.remove('hidden');
+      Object.values(fieldsEdit).forEach(input => {
+        if (input) input.style.display = "block";
+      });
+      editBtn.style.display = "none";
+      saveBtn.style.display = "inline-block";
+      cancelBtn.style.display = "inline-block";
+    }
+
+    function exitEditMode() {
+      personalSection.style.display = "";
+      officeSection.style.display = "";
+      accountSection.style.display = "";
+      editSection.classList.add('hidden');
+      Object.values(fieldsEdit).forEach(input => {
+        if (input) input.style.display = "none";
+      });
+      editBtn.style.display = "inline-block";
+      saveBtn.style.display = "none";
+      cancelBtn.style.display = "none";
+    }
+
+    // Save changes to Firestore for the signed-in user
+    async function saveChanges(userId) {
+      try {
+        const updated = {};
+        for (const key in fieldsEdit) {
+          if (fieldsEdit[key]) updated[key] = fieldsEdit[key].value;
+        }
+
+        // If user updated profile photo via previewPhoto.src or fieldsEdit.photoURL value
+        if (fieldsEdit.photoURL && fieldsEdit.photoURL.value) {
+          updated.photoURL = fieldsEdit.photoURL.value;
+        }
+
+        const docRef = doc(db, 'users', userId);
+        await updateDoc(docRef, updated);
+
+        // update view fields
+        for (const key in updated) {
+          if (fieldsView[key] && updated[key] !== undefined) fieldsView[key].textContent = updated[key];
+        }
+        if (updated.fullName) fieldsView.displayName.textContent = updated.fullName;
+        if (updated.gnDivision) fieldsView.displayRole.textContent = "Grama Niladhari - " + updated.gnDivision;
+        if (updated.photoURL) {
+          fieldsView.profilePhoto.src = updated.photoURL;
+          previewPhoto.src = updated.photoURL;
+          previewPhoto.style.display = 'block';
+        }
+
+        exitEditMode();
+        alert("✅ Profile updated successfully!");
+      } catch (err) {
+        console.error(err);
+        alert("❌ Error updating profile: " + (err.message || err));
+      }
+    }
+
+    // photo input handling: convert to data URL and store temporarily in fieldsEdit.photoURL.value
+    profilePhotoInput.addEventListener('change', () => {
+      const file = profilePhotoInput.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        previewPhoto.src = e.target.result;
+        previewPhoto.style.display = 'block';
+        // store the base64 in fieldsEdit.photoURL (create the field if missing)
+        fieldsEdit.photoURL = { value: e.target.result };
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Password modal handlers
+    function showModal() {
+      passwordModal.classList.add('show');
+      passwordModal.classList.remove('hidden');
+    }
+    function hideModal() {
+      passwordModal.classList.remove('show');
+      setTimeout(() => passwordModal.classList.add('hidden'), 300);
+    }
+    changePasswordBtn.addEventListener('click', showModal);
+    closeModal.addEventListener('click', hideModal);
+    cancelPwdBtn.addEventListener('click', hideModal);
+
+    submitPwdBtn.addEventListener('click', async () => {
+      const user = auth.currentUser;
+      const currentPwd = currentPwdInput.value;
+      const newPwd = newPwdInput.value;
+      if (!user) return alert("No user logged in.");
+      if (!currentPwd || !newPwd) return alert("Fill both current and new password.");
+
+      try {
+        const credential = EmailAuthProvider.credential(user.email, currentPwd);
+        await reauthenticateWithCredential(user, credential);
+        await updatePassword(user, newPwd);
+        alert("✅ Password updated successfully!");
+        hideModal();
+      } catch (err) {
+        console.error(err);
+        alert("❌ Error changing password: " + (err.message || err));
+      }
+    });
+
+    // wire edit/save/cancel buttons (save needs userId -> added after auth ready)
+    editBtn.addEventListener('click', enterEditMode);
+    cancelBtn.addEventListener('click', exitEditMode);
+
+    // Auth state and loading profile: use Firestore doc person_registrations/{uid}
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userId = user.uid;
+
+        // Ensure doc exists — if not, create minimal doc using user's email and displayName (optional)
+        try {
+          const docRef = doc(db, 'users', userId);
+          const snap = await getDoc(docRef);
+          if (!snap.exists()) {
+            // create with default values (so profile page has data)
+            await setDoc(docRef, {
+              fullName: user.displayName || '',
+              nic: '',
+              email: user.email || '',
+              phone: '',
+              address: '',
+              province: '',
+              gnDivision: '',
+              divCode: '',
+              district: '',
+              officeContact: '',
+              username: user.email ? user.email.split('@')[0] : '',
+              lastLogin: new Date().toLocaleString(),
+              photoURL: ''
+            });
+          } else {
+            // update lastLogin timestamp
+            await updateDoc(docRef, { lastLogin: new Date().toLocaleString() }).catch(()=>{});
+          }
+        } catch (e) {
+          console.warn('Error creating/initializing profile doc:', e);
+        }
+
+        // Load profile values into view + edit fields
+        await loadProfile(userId);
+
+        // Add save handler now (bind only once)
+        saveBtn.addEventListener('click', () => saveChanges(userId), { once: false });
+
+      } else {
+        // if no user, redirect to login (your index.html)
+        window.location.href = "index.html";
+      }
+    });
+
+    // Add logout link behavior (the Logout anchor)
+    // Find the logout anchor and replace its href to use signOut to ensure session cleared
+    const logoutAnchor = Array.from(document.querySelectorAll('a')).find(a => a.getAttribute('href') === 'index.html' && a.textContent.trim().toLowerCase().includes('logout'));
+    if (logoutAnchor) {
+      logoutAnchor.addEventListener('click', async (ev) => {
+        ev.preventDefault();
+        try { await signOut(auth); window.location.href = 'index.html'; }
+        catch (err) { console.error('Logout failed', err); window.location.href = 'index.html'; }
+      });
+    }
+
+  </script>
+</body>
+</html>
+
+
+
+

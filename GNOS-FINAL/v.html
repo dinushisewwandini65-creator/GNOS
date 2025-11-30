@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Officer Info Portal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f7fafd;
+    }
+    .topbar {
+      background: #f6f8fc;
+      padding: 10px 0;
+      border-bottom: 4px solid #2389c7;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+    .logo {
+      margin-left: 24px;
+      height: 36px;
+      vertical-align: middle;
+    }
+    .lang-switch {
+      position: absolute;
+      right: 40px;
+      top: 18px;
+      background: #fff;
+      border-radius: 6px;
+      padding: 12px 20px;
+      font-weight: bold;
+      box-shadow: 0 2px 8px #2389c790;
+      border: 1px solid #ddd;
+      display: flex;
+      gap: 8px;
+    }
+    .lang-switch button {
+      border: none;
+      background: #2389c7;
+      color: white;
+      padding: 7px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+    .lang-switch .active {
+      background: #34495e;
+      color: #fff;
+    }
+    .navbar {
+      background: #34495e;
+      padding: 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 0px;
+    }
+    .navbar .home {
+      background: #fff;
+      color: #2389c7;
+      padding: 8px 14px;
+      border-radius: 4px;
+      font-size: 24px;
+      margin-left: 36px;
+    }
+    .container {
+      margin: 40px auto 0 auto;
+      max-width: 700px;
+      padding: 36px;
+      background: #eef4fa;
+      border-radius: 4px;
+      box-shadow: 0 2px 16px #0001;
+    }
+    .title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #2389c7;
+      margin-bottom: 36px;
+    }
+    .tabbar {
+      display: flex;
+      border-bottom: 1px solid #b6c3cd;
+      margin-bottom: 24px;
+      gap: 6px;
+      background: #dbe8f5;
+    }
+    .tabbar button {
+      background: #fff;
+      border: none;
+      padding: 10px 24px;
+      font-size: 16px;
+      cursor: pointer;
+      color: #34495e;
+      border-bottom: 3px solid #2389c7;
+      font-weight: bold;
+      color: #2389c7;
+      background: #f0f7ff;
+    }
+    .form-group {
+      margin-bottom: 30px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 8px;
+      color: #34495e;
+    }
+    select {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 3px;
+      border: 1px solid #b6c3cd;
+      background: #fff;
+    }
+    .show-btn {
+      background: #2389c7;
+      color: #fff;
+      font-size: 13px; /* smaller */
+      font-weight: 700;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 12px; /* compact */
+      width: 120px; /* make button shorter */
+      margin: 12px auto 0 auto; /* center horizontally */
+      display: block;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(35,137,199,0.12);
+      transition: transform 0.12s, background 0.12s;
+    }
+    .show-btn:hover {
+      transform: translateY(-2px);
+      background: #1f6b8f;
+      color: #fff;
+    }
+    @media (max-width:700px) {
+      .container { padding: 12px;}
+      label, select { font-size: 13px; }
+      .show-btn { width: 90%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <img src="logo.jpg" class="logo" alt="Logo">
+    <div class="lang-switch">
+      <button id="lang-en" onclick="setLang('en')" class="active">English</button>
+      <button id="lang-si" onclick="setLang('si')">සිංහල</button>
+      <button id="lang-ta" onclick="setLang('ta')">தமிழ்</button>
+    </div>
+  </div>
+  <div class="navbar">
+    <a href="index.html" class="home" title="Home">&#8962;</a>
+  </div>
+  <div class="container">
+    <div class="title" id="main-title"></div>
+    <div class="tabbar">
+      <button id="tab1" class="active">Grama Niladhari Information</button>
+    </div>
+    <div id="tab-content-1">
+      <div class="form-group">
+        <label for="district" id="district-label"></label>
+        <select id="district" name="district" onchange="updateDivision()">
+          <option value="">Select a District</option>
+          <option value="Colombo">Colombo</option>
+          <option value="Gampaha">Gampaha</option>
+          <option value="Kalutara">Kalutara</option>
+          <option value="Kandy">Kandy</option>
+          <option value="Matale">Matale</option>
+          <option value="Nuwara Eliya">Nuwara Eliya</option>
+          <option value="Galle">Galle</option>
+          <option value="Matara">Matara</option>
+          <option value="Hambantota">Hambantota</option>
+          <option value="Jaffna">Jaffna</option>
+          <option value="Kilinochchi">Kilinochchi</option>
+          <option value="Mannar">Mannar</option>
+          <option value="Vavuniya">Vavuniya</option>
+          <option value="Mullaitivu">Mullaitivu</option>
+          <option value="Batticaloa">Batticaloa</option>
+          <option value="Ampara">Ampara</option>
+          <option value="Trincomalee">Trincomalee</option>
+          <option value="Kurunegala">Kurunegala</option>
+          <option value="Puttalam">Puttalam</option>
+          <option value="Anuradhapura">Anuradhapura</option>
+          <option value="Polonnaruwa">Polonnaruwa</option>
+          <option value="Badulla">Badulla</option>
+          <option value="Monaragala">Monaragala</option>
+          <option value="Ratnapura">Ratnapura</option>
+          <option value="Kegalle">Kegalle</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="division" id="division-label"></label>
+        <select id="division" name="division">
+          <option value="">Select a Division</option>
+          <option value="Attanagalla">Attanagalla</option>
+          <option value="Biyagama">Biyagama</option>
+          <option value="Divulapitiya">Divulapitiya</option>
+          <option value="Dompe">Dompe</option>
+          <option value="Gampaha">Gampaha</option>
+          <option value="Ja-Ela">Ja-Ela</option>
+          <option value="Katana">Katana</option>
+          <option value="Kelaniya">Kelaniya</option>
+          <option value="Mahara">Mahara</option>
+          <option value="Minuwangoda">Minuwangoda</option>
+          <option value="Mirigama">Mirigama</option>
+          <option value="Negombo">Negombo</option>
+          <option value="Wattala">Wattala</option>
+        </select>
+      </div>
+      <div>
+          <a id="btn-show" class="show-btn"type ="button" href="t.html" title="Open t.html">Show</a>
+        </div>
+
+    </div>
+  </div>
+  <script>
+    const LANG = {
+      en: {
+        mainTitle: "Grama Niladhari Information Portal",
+        districtLabel: "District *",
+        divisionLabel: "Divisional Secretariat *"
+      },
+      si: {
+        mainTitle: "ග්‍රාම නිළධාරී, සමෘද්ධි නිළධාරී, සංවර්ධන නිළධාරී හා ක්ෂේත්‍ර නිළධාරී තොරතුරු පෝර්ටලය",
+        districtLabel: "දිස්ත්‍රික්කය *",
+        divisionLabel: "ප්‍රාදේශීය ලේකම් *"
+      },
+      ta: {
+        mainTitle: "கிராம நிர்வாகி, சமுர்த்தி அதிகாரி, வளர்ச்சி அதிகாரி மற்றும் புல அதிகாரி தகவல் களஞ்சியம்",
+        districtLabel: "மாவட்டம் *",
+        divisionLabel: "வட்டாட்சியர் *"
+      }
+    };
+    let currentLang = "en";
+    function setLang(lang) {
+      currentLang = lang;
+      document.getElementById('lang-en').classList.remove('active');
+      document.getElementById('lang-si').classList.remove('active');
+      document.getElementById('lang-ta').classList.remove('active');
+      document.getElementById('lang-'+lang).classList.add('active');
+      const txt = LANG[lang];
+      document.getElementById('main-title').innerText = txt.mainTitle;
+      document.getElementById('district-label').innerText = txt.districtLabel;
+      document.getElementById('division-label').innerText = txt.divisionLabel;
+    }
+    // Respect ?lang= query parameter (e.g. ?lang=si)
+    (function(){
+      const params = new URLSearchParams(window.location.search);
+      const lang = params.get('lang');
+      if (lang && (lang === 'en' || lang === 'si' || lang === 'ta')) {
+        setLang(lang);
+      } else {
+        setLang('en');
+      }
+    })();
+  </script>
+</body>
+</html>
+
+
+

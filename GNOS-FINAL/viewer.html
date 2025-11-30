@@ -1,0 +1,38 @@
+<!doctype html>
+<html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>PDF Viewer</title>
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+        overflow: auto;
+    }
+
+    header {
+        padding: 10px;
+        background: #0f72c8;
+        color: #fff;
+    }
+
+    iframe {
+        width: 100%;
+        height: calc(100vh - 40px);
+        border: none;
+        display: block;
+    }
+</style>
+</head><body>
+<header>
+  <a href="final1.html">← Back</a>
+  <span style="margin-left:20px">PDF Viewer (embedded)</span>
+</header>
+<iframe id="pdfFrame"></iframe>
+<script>
+const params = new URLSearchParams(location.search);
+const file = params.get('file') || 'sample.pdf';
+document.getElementById('pdfFrame').src = file;
+</script>
+</body></html>

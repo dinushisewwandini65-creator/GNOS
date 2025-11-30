@@ -1,0 +1,49 @@
+<!doctype html><html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>GN Information Portal</title>
+<link rel="stylesheet" href="styles.css"/></head><body>
+<header class="topbar"><img src="logo_long.png" alt="logo" style="height:40px"/></header>
+<main style="padding:20px">
+  <h1>Grama Niladhari Officer Information Portal</h1>
+  <label>District:
+    <select id="districtSelect"></select>
+  </label>
+  <label>Divisional Secretariat:
+    <select id="divSelect"></select>
+  </label>
+  <button id="showBtn" class="btn">Show</button>
+
+  <div id="results" style="margin-top:20px"></div>
+</main>
+<script>
+const data = {
+  "Colombo": ["Colombo Div A","Colombo Div B"],
+  "Gampaha": ["Gampaha Div A","Gampaha Div B"],
+  "Kandy": ["Kandy Div A","Kandy Div B"]
+};
+const gns = {
+  "Colombo Div A": [{"name":"A. Silva","phone":"011-1234567"},{"name":"B. Perera","phone":"011-7654321"}],
+  "Colombo Div B": [{"name":"C. Fernando","phone":"011-2223333"}],
+  "Gampaha Div A": [{"name":"D. Kumara","phone":"033-9876543"}],
+  "Kandy Div A": [{"name":"E. Jayasuriya","phone":"081-5554444"}]
+};
+
+const districtSelect = document.getElementById('districtSelect');
+Object.keys(data).forEach(d=>{
+  const o = document.createElement('option'); o.value=d; o.textContent=d; districtSelect.appendChild(o);
+});
+districtSelect.addEventListener('change', ()=>{
+  const list = data[districtSelect.value]||[];
+  const dsel = document.getElementById('divSelect');
+  dsel.innerHTML='';
+  list.forEach(x=>{ const o=document.createElement('option'); o.value=x; o.textContent=x; dsel.appendChild(o); });
+});
+districtSelect.dispatchEvent(new Event('change'));
+document.getElementById('showBtn').addEventListener('click', ()=>{
+  const sel = document.getElementById('divSelect').value;
+  const items = gns[sel] || [];
+  let html = '<table class="table"><tr><th>Name</th><th>Phone</th></tr>';
+  items.forEach(i=> html += `<tr><td>${i.name}</td><td>${i.phone}</td></tr>`);
+  html += '</table>';
+  document.getElementById('results').innerHTML = html;
+});
+</script>
+</body></html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Registered Persons - GNOS</title>
+<link rel="stylesheet" href="styles.css"/>
+<style>
+  body { font-family: 'Segoe UI', sans-serif; background: #f5f7ff; margin: 0; padding: 20px; }
+  h1 { color: #1e3a8a; text-align: center; }
+  .top-actions { text-align: center; margin-bottom: 15px; }
+  .top-actions button { background: #2563eb; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; }
+  table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+  th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+  th { background: #2563eb; color: white; }
+  tr:nth-child(even) { background: #f0f4ff; }
+  button { padding: 6px 12px; border: none; border-radius: 5px; cursor: pointer; margin: 2px; }
+  .delete-btn { background: #ef4444; color: white; }
+  .edit-btn { background: #f59e0b; color: white; }
+  .pagination { margin-top: 15px; text-align: center; }
+  .pagination button { background: #2563eb; color: white; padding: 5px 12px; border-radius: 5px; margin: 2px; }
+  /* Modal styles */
+  .modal { display: none; position: fixed; z-index: 10; left: 0; top: 0; width: 100%; height: 100%; overflow: auto;
+           background-color: rgba(0,0,0,0.4); }
+  .modal-content { background-color: #fefefe; margin: 50px auto; padding: 20px; border: 1px solid #888; width: 500px; border-radius: 8px; }
+  .modal-content label { display: block; margin-top: 10px; font-weight: 600; }
+  .modal-content input, .modal-content select, .modal-content textarea { width: 100%; padding: 8px; margin-top: 4px; border-radius: 6px; border: 1px solid #ccc; }
+  .modal-content button { margin-top: 15px; width: 48%; }
+</style>
+</head>
+<body>
+<h1>Registered Persons</h1>
+<a href="final1.html" class="btn outline">🏠 Home</a>
+
+<div class="top-actions">
+  <button id="registerBtn">➕ Register New Person</button>
+</div>
+
+<table id="personTable">
+  <thead>
+    <tr>
+      <th>Full Name</th>
+      <th>NIC</th>
+      <th>DOB</th>
+      <th>Gender</th>
+      <th>Address</th>
+      <th>District</th>
+      <th>Nationality</th>
+      <th>Contact</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<div class="pagination">
+  <button id="prevPage">Previous</button>
+  <span id="pageInfo"></span>
+  <button id="nextPage">Next</button>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <h3>Edit Person Details</h3>
+    <form id="editForm">
+      <label>Full Name</label>
+      <input type="text" id="editFullName" required>
+
+      <label>NIC</label>
+      <input type="text" id="editNIC">
+
+      <label>DOB</label>
+      <input type="date" id="editDOB">
+
+      <label>Gender</label>
+      <select id="editGender" required>
+        <option value="">-- Select Gender --</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <label>Address</label>
+      <textarea id="editAddress"></textarea>
+
+      <label>District</label>
+      <input type="text" id="editDistrict">
+
+      <label>Nationality</label>
+      <input type="text" id="editNationality">
+
+      <label>Contact</label>
+      <input type="text" id="editContact">
+
+      <button type="submit" style="background:#2563eb;color:white;">💾 Save Changes</button>
+      <button type="button" id="closeModal" style="background:#ef4444;color:white;">✖ Cancel</button>
+    </form>
+  </div>
+</div>
+
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getDatabase, ref, onValue, remove, update } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyATq733SgOlw3uX3hV2rNx8skuxm7aeppA",
+  authDomain: "login-page-new-3780c.firebaseapp.com",
+  databaseURL: "https://login-page-new-3780c-default-rtdb.firebaseio.com/",
+  projectId: "login-page-new-3780c",
+  storageBucket: "login-page-new-3780c.appspot.com",
+  messagingSenderId: "106026228924",
+  appId: "1:106026228924:web:3e14f52a3fe928c06644b9"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let entries = [];
+let currentPage = 1;
+const rowsPerPage = 10;
+
+const tableBody = document.querySelector('#personTable tbody');
+const pageInfo = document.getElementById('pageInfo');
+const registerBtn = document.getElementById('registerBtn');
+
+const editModal = document.getElementById('editModal');
+const editForm = document.getElementById('editForm');
+const closeModalBtn = document.getElementById('closeModal');
+
+let editId = null;
+
+// Real-time listener
+onValue(ref(db, "person_registrations"), snapshot => {
+  const data = snapshot.val();
+  if (!data) {
+    entries = [];
+    tableBody.innerHTML = '<tr><td colspan="9">No entries found.</td></tr>';
+    pageInfo.textContent = '';
+    return;
+  }
+ // entries = []
+  //Object.keys(data).map(key => ({ id: key, ...data[key] }));
+  entries = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+
+  if ((currentPage-1)*rowsPerPage >= entries.length && currentPage > 1) currentPage--;
+  renderTable();
+});
+
+// Render table
+function renderTable() {
+  tableBody.innerHTML = '';
+  const start = (currentPage - 1) * rowsPerPage;
+  const end = start + rowsPerPage;
+  const pageEntries = entries.slice(start, end);
+
+  pageEntries.forEach(entry => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${entry.fullName || ''}</td>
+      <td>${entry.nic || ''}</td>
+      <td>${entry.dob || ''}</td>
+      <td>${entry.gender || ''}</td>
+      <td>${entry.address || ''}</td>
+      <td>${entry.district || ''}</td>
+      <td>${entry.nationality || ''}</td>
+      <td>${entry.contact || ''}</td>
+      <td>
+        <button class="edit-btn" data-id="${entry.id}">Edit</button>
+        <button class="delete-btn" data-id="${entry.id}">Delete</button>
+      </td>
+    `;
+    tableBody.appendChild(tr);
+  });
+
+  pageInfo.textContent = `Page ${currentPage} of ${Math.ceil(entries.length / rowsPerPage)}`;
+  attachButtons();
+}
+
+// Attach Edit/Delete buttons
+function attachButtons() {
+  document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.onclick = async () => {
+      const id = btn.dataset.id;
+      if (confirm("Are you sure you want to delete this entry?")) {
+        await remove(ref(db, "person_registrations/" + id));
+      }
+    };
+  });
+
+  document.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.onclick = () => {
+      editId = btn.dataset.id;
+      const entry = entries.find(e => e.id === editId);
+      if (!entry) return;
+      editForm['editFullName'].value = entry.fullName || '';
+      editForm['editNIC'].value = entry.nic || '';
+      editForm['editDOB'].value = entry.dob || '';
+      editForm['editGender'].value = entry.gender || '';
+      editForm['editAddress'].value = entry.address || '';
+      editForm['editDistrict'].value = entry.district || '';
+      editForm['editNationality'].value = entry.nationality || '';
+      editForm['editContact'].value = entry.contact || '';
+      editModal.style.display = 'block';
+    };
+  });
+}
+
+// Pagination
+document.getElementById('prevPage').addEventListener('click', () => {
+  if (currentPage > 1) { currentPage--; renderTable(); }
+});
+document.getElementById('nextPage').addEventListener('click', () => {
+  if (currentPage * rowsPerPage < entries.length) { currentPage++; renderTable(); }
+});
+
+// Close modal
+closeModalBtn.addEventListener('click', () => { editModal.style.display = 'none'; editId = null; });
+
+// Save changes
+editForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!editId) return;
+
+  const updatedData = {
+    fullName: editForm['editFullName'].value,
+    nic: editForm['editNIC'].value,
+    dob: editForm['editDOB'].value,
+    gender: editForm['editGender'].value,
+    address: editForm['editAddress'].value,
+    district: editForm['editDistrict'].value,
+    nationality: editForm['editNationality'].value,
+    contact: editForm['editContact'].value
+  };
+
+  if (!updatedData.fullName || !updatedData.gender) {
+    alert("Full Name and Gender are required.");
+    return;
+  }
+
+  await update(ref(db, "person_registrations/" + editId), updatedData);
+  alert("✅ Changes saved successfully!");
+  editModal.style.display = 'none';
+  editId = null;
+});
+
+// Register Person button link
+registerBtn.addEventListener('click', () => {
+  window.location.href = 'pp.html';
+});
+</script>
+</body>
+</html>
+
+

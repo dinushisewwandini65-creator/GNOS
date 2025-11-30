@@ -1,0 +1,298 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Grama Niladhari — Register</title>
+<style>
+:root{
+--bg1:#1E3A8A;
+--bg2:#3B82F6;
+--bg3:#CBD5E1;
+--card-bg:rgba(255,255,255,0.96);
+--accent:#2563EB;
+--muted:#f3f6fa;
+--radius:12px;
+}
+*{box-sizing:border-box}
+body{
+margin:0;
+font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+background:linear-gradient(135deg,var(--bg1),var(--bg2),var(--bg3));
+color:#0b1220;
+padding:20px;
+}
+.wrap{
+width:100%;
+max-width:1100px;
+background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02));
+border-radius:16px;
+box-shadow:0 10px 30px rgba(15,23,42,0.35);
+overflow:hidden;
+display:grid;
+grid-template-columns:1fr;
+}
+@media(min-width:960px){.wrap{grid-template-columns:1fr 460px}}
+.visual{
+position:relative;
+padding:40px;
+background:linear-gradient(135deg,rgba(30,64,175,0.8),rgba(37,99,235,0.8));
+background-size:cover;
+background-position:left;
+background-repeat:no-repeat;
+color:#fff;
+display:flex;
+flex-direction:column;
+justify-content:left;
+gap:18px;
+min-height:100%;
+}
+.visual .title{font-size:22px;font-weight:700;text-shadow:0 4px 20px rgba(0,0,0,0.35)}
+.visual p{opacity:0.95;line-height:1.6;max-width:380px;text-shadow:0 2px 8px rgba(0,0,0,0.3)}
+.card{
+background:var(--card-bg);
+padding:28px;
+border-radius:var(--radius);
+margin:18px;
+}
+h1{margin:0 0 6px;font-size:20px;color:#1E3A8A}
+.muted{color:var(--muted);font-size:0.95rem;margin-bottom:12px}
+form .grid{display:grid;gap:12px;grid-template-columns:1fr}
+@media(min-width:640px){form .grid.two{grid-template-columns:1fr 1fr}}
+label{display:block;font-size:0.9rem;margin-bottom:6px;color:#111827;font-weight:600}
+input[type=text],input[type=email],input[type=tel],input[type=password],select,textarea{
+width:100%;
+padding:10px 12px;
+border-radius:8px;
+border:1px solid #cbd5e1;
+font-size:0.95rem;
+background:#fff;
+transition:border .2s,box-shadow .2s;
+}
+input:focus,textarea:focus,select:focus{
+border-color:var(--accent);
+box-shadow:0 0 0 3px rgba(37,99,235,0.2);
+outline:none;
+}
+textarea{min-height:90px;resize:vertical}
+.small{font-size:0.85rem;color:var(--muted)}
+.actions{display:flex;gap:12px;margin-top:12px;align-items:center}
+.btn{
+padding:10px 14px;
+border-radius:10px;
+border:none;
+font-weight:700;
+cursor:pointer;
+transition:transform .12s ease,box-shadow .12s ease;
+}
+.btn-primary{
+background:linear-gradient(90deg,var(--bg1),var(--bg2));
+color:white;
+box-shadow:0 6px 18px rgba(59,130,246,0.25);
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(59,130,246,0.35)}
+.btn-outline{
+background:transparent;
+color:var(--accent);
+border:2px solid rgba(37,99,235,0.25);
+}
+.btn-outline:hover{background:rgba(37,99,235,0.05);transform:translateY(-2px)}
+.photo-preview{
+width:84px;height:84px;
+border-radius:10px;
+background:#f3f4f6;
+display:flex;align-items:center;justify-content:center;
+overflow:hidden;
+border:1px dashed #cbd5e1;
+}
+.photo-preview img{width:100%;height:100%;object-fit:cover}
+.error{color:#dc2626;font-size:0.85rem;margin-top:6px}
+.note{font-size:0.85rem;color:var(--muted);margin-top:8px}
+.top-link{font-size:0.9rem;color:#1E3A8A;text-decoration:none;display:inline-block;margin-bottom:12px}
+footer{text-align:center;margin-top:14px;font-size:0.85rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="visual">
+<div>
+<div class="title">Grama Niladhari Service — Register</div>
+<p>Join the Grama Niladhari network to assist citizens and manage local services. Register securely to access community tools and reporting features.</p>
+<h3 class="large">Already have an account? <a href="l3.html" style="color:#fff;text-decoration:underline">Login here</a></h3>
+</div>
+</div>
+<div class="card">
+<a href="l3.html" class="top-link">← Back to Login</a>
+<h1>Create your account</h1>
+<div class="muted">Register as a Grama Niladhari (GN) or Assistant GN to manage local services.</div>
+<form id="registerForm" >
+    
+<div class="grid two">
+<div>
+<label for="fullname">Full name</label>
+<input id="fullname" name="fullname" type="text" placeholder="e.g., Sunil Perera" required>
+<div class="error" id="err-fullname"></div>
+</div>
+<div>
+<label for="nic">NIC / National ID</label>
+<input id="nic" name="nic" type="text" placeholder="e.g., 123456789V" required>
+<div class="error" id="err-nic"></div>
+</div>
+</div>
+
+<div class="grid two" style="margin-top:6px">
+<div>
+<label for="email">Email</label>
+<input id="email" name="email" type="email" placeholder="you@example.com" required>
+<div class="error" id="err-email"></div>
+</div>
+<div>
+<label for="phone">Phone number</label>
+<input id="phone" name="phone" type="tel" placeholder="+94 7xx xxx xxx" required>
+<div class="error" id="err-phone"></div>
+</div>
+</div>
+
+<div class="grid two">
+<div>
+<label for="gsno">GS Service number</label>
+<input id="gsno" name="gsNo" type="text" placeholder="Enter GS number" required>
+<div class="error" id="err-number"></div>
+</div>
+<div>
+<label for="division">GN Division</label>
+<input id="division" name="division" type="text" placeholder="e.g., Kolonnawa" required>
+<div class="error" id="err-division"></div>
+</div>
+</div>
+
+<div style="margin-top:12px">
+<label for="address">Address</label>
+<textarea id="address" name="address" placeholder="Office or home address" required></textarea>
+<div class="error" id="err-address"></div>
+</div>
+
+<div class="grid two" style="margin-top:12px;align-items:center">
+<div>
+<label for="password">Password</label>
+<input id="password" name="password" type="password" placeholder="At least 8 characters" minlength="8" required>
+<div class="error" id="err-password"></div>
+</div>
+<div>
+<label for="confirm">Confirm password</label>
+<input id="confirm" name="confirm" type="password" placeholder="Re-type password" minlength="8" required>
+<div style="display:flex;gap:8px;align-items:center;margin-top:6px">
+<button type="button" id="togglePwd" class="btn btn-outline" style="padding:6px 10px;font-weight:600">Show</button>
+<div class="small">Use a strong password.</div>
+</div>
+<div class="error" id="err-confirm"></div>
+</div>
+</div>
+
+<div style="margin-top:14px;display:flex;gap:12px;align-items:center">
+<div>
+<label>Profile photo</label>
+<div style="display:flex;gap:10px;align-items:center">
+<div class="photo-preview" id="photoPreview"><span style="font-size:12px;color:#9ca3af">No photo</span></div>
+<div>
+<input id="photo" type="file" accept="image/*">
+<div class="small">Optional — JPG/PNG up to 2MB</div>
+</div>
+</div>
+<div class="error" id="err-photo"></div>
+</div>
+</div>
+
+<div style="margin-top:12px">
+<label><input id="terms" type="checkbox" required> &nbsp; I confirm my information is correct and accept the <a href="#" onclick="alert('Terms placeholder');return false;">terms</a>.</label>
+<div class="error" id="err-terms"></div>
+</div>
+
+<div class="actions">
+<button type="submit" id="submitBtn" class="btn btn-primary">Register</button>
+<button type="reset" class="btn btn-outline">Clear</button>
+</div>
+
+<div class="note">After registration, an admin will verify your details. </div>
+</form>
+<footer>Grama Niladhari Service — Secure citizen assistance</footer>
+</div>
+</div>
+
+
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+<!-- Separate JS -->
+<script src="register.js">
+
+document.getElementById('registerForm').addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  const gsno = document.getElementById('gsno').value.trim();
+  const gsPattern = /^GN\d{6}$/;
+  if (!gsPattern.test(gsno)) {
+    alert("Not a valid GS Service number format.");
+    return;
+  }
+
+  const validGSRef = firebase.firestore().collection('validGSNumbers').doc(gsno);
+  validGSRef.get().then(docSnapshot => {
+    if (!docSnapshot.exists) {
+      alert("GS Service number not recognized or invalid.");
+      return;
+    }
+    
+    // GS number valid - proceed to create Auth user
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then(userCredential => {
+        // Registration successful - now save user data in Firestore
+        return firebase.firestore().collection('users').doc(userCredential.user.uid).set({
+          fullname: document.getElementById('fullname').value,
+          nic: document.getElementById('nic').value,
+          phone: document.getElementById('phone').value,
+          gsno: gsno,
+          division: document.getElementById('division').value,
+          address: document.getElementById('address').value,
+          email: email,
+          // ...other fields
+        });
+      })
+      .then(() => {
+        alert("Registration successful! Await admin approval.");
+        // Optionally redirect or reset form
+      })
+      .catch(error => {
+        alert("Registration failed: " + error.message);
+      });
+
+  }).catch(error => {
+    alert("Error validating GS Service number: " + error.message);
+  });
+});
+
+
+
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

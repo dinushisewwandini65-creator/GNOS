@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GNOS Login</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #1E3A8A, #3B82F6, #93C5FD);
+      background-attachment: fixed;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      transition: background 0.6s ease-in-out;
+      color: #111;
+    }
+
+    /* Background for OTP mode (slightly darker blue) 
+    body.otp-bg {
+      background: linear-gradient(135deg, #1E40AF, #2563EB, #60A5FA);
+      background-attachment: fixed;
+    }*/
+
+    .login-box {
+      background: rgba(255, 255, 255, 0.438);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25);
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+      backdrop-filter: blur(8px);
+    }
+
+    .logo {
+      width: 90px;
+      margin-bottom: 15px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #1E3A8A;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+      text-align: left;
+      position: relative;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #bbb;
+      outline: none;
+      transition: 0.3s;
+      font-size: 14px;
+    }
+
+    input:focus {
+      border-color: #2563EB;
+      box-shadow: 0 0 5px rgba(37, 99, 235, 0.5);
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 38px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #555;
+      user-select: none;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 12px;
+      transition: 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-login {
+      background: linear-gradient(135deg, #2563EB, #1E40AF);
+      color: rgb(248, 244, 244);
+    }
+
+    .btn-login:hover {
+      background: linear-gradient(135deg, #1E40AF, #60A5FA);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-register {
+      background: linear-gradient(135deg, #9CA3AF, #6B7280);
+      color: #f9f9f9;
+    }
+
+    .btn-register:hover {
+      background: linear-gradient(135deg, #6B7280, #D1D5DB);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .footer {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .footer a {
+      color: #2563EB;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    .top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  background-color: whitesmoke; /* dark blue (match your theme) */
+  display: flex;
+  align-items: center; /* vertically center the content */
+  padding-left: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  z-index: 1000;
+}
+
+.home-link {
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.home-link:hover {
+  color: #FFD700; /* gold hover effect */
+}
+
+body {
+  padding-top: 60px;
+}
+
+  </style>
+</head>
+
+<body>
+  <div class="top-bar">
+    <a href="final1.html" class="home link" >🏠 Home</a>
+  </div>
+
+  <div class="top-bar">
+  <a href="register.html" class="home-link">← Back</a>
+</div>
+
+  <div class="login-box">
+    <img src="logo3.png" class="logo" alt="Logo">
+    <h2>Login</h2>
+
+    <!-- STEP 1: Login Form -->
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="no">Service Number</label>
+        <input type="text" id="no" name="no" placeholder="Enter GS Service Number " required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password (8 characters)</label>
+        <input type="password" id="password" name="password" placeholder="Enter password" maxlength="8" required>
+        <span class="toggle-password">👁</span>
+      </div>
+      <button type="button" class="btn btn-login" onclick="validateLogin()">Login</button>
+      <button type="button" class="btn btn-register" onclick="window.location.href='register.html'">Register</button>
+      
+    </form>
+
+    <!-- STEP 2: OTP Verification
+    <form id="otpForm" style="display:none;">
+      <div class="form-group">
+        <label for="otp">Enter OTP</label>
+        <input type="text" id="otp" name="otp" placeholder="Enter the 6-digit code" required>
+      </div>
+      <button type="submit" class="btn btn-login">Verify OTP</button>
+    </form> -->
+
+    <div class="footer">
+      
+      <p><a href="#" id="forgotPassword">Forgot Password?</a></p>
+
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+<script src="login.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Grama Niladhari Online Services - GNOS</title>
+  <link rel="stylesheet" href="styles.css" />
+
+  
+  <style>
+    /* 🔹 Profile button blink animation */
+    @keyframes blinkEffect {
+      0% { background-color: transparent; transform: scale(1); }
+      25% { background-color: #2563eb; transform: scale(1.1); }
+      50% { background-color: #60a5fa; transform: scale(1); }
+      75% { background-color: #2563eb; transform: scale(1.05); }
+      100% { background-color: transparent; transform: scale(1); }
+    }
+
+    .blink { animation: blinkEffect 0.6s ease; }
+
+    .icon-btn {
+      font-size: 22px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #1e3a8a;
+      transition: all 0.3s ease;
+    }
+    .icon-btn:hover { transform: scale(1.1); color: #2563eb; }
+
+    /* 🔹 Simple slideshow style */
+    .hero-images {
+      position: relative;
+      width: 100%;
+      height: 350px;
+      overflow: hidden;
+      margin-top: 20px;
+    }
+    .carousel-img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1.5s ease-in-out;
+    }
+    .carousel-img.active { opacity: 1; }
+  </style>
+</head>
+
+<body>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+  <!-- 🔷 HEADER -->
+  <header class="topbar">
+    <div class="top-left">
+      <img src="Emblem.png" alt="Emblem" class="emblem-logo"/>
+      <img src="logo_long.png" alt="GNOS" class="logo" />
+    </div>
+    <div class="top-right">
+      <div class="lang-buttons">
+        <button class="lang-btn" data-lang="si">සිංහල</button>
+        <button class="lang-btn" data-lang="ta">தமிழ்</button>
+        <button class="lang-btn" data-lang="en">English</button>
+      </div>
+      <a href="l3.html" class="btn small">Sign in</a>
+      <a href="register.html" class="btn primary small">Register</a>
+      <div class="lock">🔒</div><a href="register.html" class="btn small"><button id="profileBtn" class="icon-btn" title="Profile">👤</button></a>
+    </div>
+  </header>
+
+  <!-- 🔷 NAVIGATION -->
+  <nav class="main-nav">
+    <a href="#home" class="nav-link" data-scroll>Home</a>
+    <a href="#about" class="nav-link" data-scroll>About</a>
+    <a href="#services" class="nav-link" data-scroll>Services</a>
+    <a href="#downloads" class="nav-link" data-scroll>Downloads</a>
+  </nav>
+
+  <!-- 🔷 MAIN CONTENT -->
+  <main>
+    <!-- 🟦 HERO SECTION -->
+    <section id="hero" class="hero">
+      <div class="hero-tagline">FAST <span>|</span> TRANSPARENT <span>|</span> SECURE</div>
+      <h1 data-i18n="title">Grama Niladhari Online Services</h1>
+      <p class="subtitle" data-i18n="subtitle">An Official Portal To Streamline Key GN Services</p>
+      <div class="hero-cta">
+        <a href="#services" class="btn large">Get start</a>
+        <a href="how-it-works.html" class="btn outline large">How it works</a>
+      </div>
+
+      <!-- 🖼️ Slideshow -->
+      <div class="hero-images">
+        <img src="screenshot4.jpeg" alt="hero" class="carousel-img active">
+        <img src="screenshot3.jpeg" alt="hero" class="carousel-img">
+        <img src="screenshot5.jpeg" alt="hero" class="carousel-img">
+        <img src="screenshot6.jpeg" alt="hero" class="carousel-img">
+        <img src="Intake_43.jpeg" alt="hero" class="carousel-img">
+      </div>
+    </section>
+
+    <!-- 🟩 ABOUT -->
+    <section id="about" class="about">
+      <h2 align="center">About</h2>
+      <div class="about-content">
+        <img src="screenshot1.jpg" alt="about image">
+        <p align="justify">
+          The Digital Service Management System for Grama Niladhari Offices has been developed to 
+          address the limitations of traditional appointment and document handling processes by introducing a 
+          comprehensive digital platform. The system integrates core functions such as person registration, 
+          identification document processing, and certificate issuance within a centralized web application. 
+          By incorporating a structured backend for service tracking and record-keeping, the project aims to 
+          enhance operational efficiency, ensure data accuracy, and improve the overall accessibility of services for both 
+          officers and citizens.
+        </p>
+      </div>
+    </section>
+
+    <!-- 🟨 SERVICES -->
+    <section id="services" class="services">
+      <h2>Services</h2>
+      <div class="service-cards">
+        <div class="card service" tabindex="0">
+          <div class="unlock">🔓</div>
+          <h3>Verification of NIC</h3>
+          <p>Verify NIC details using the official elections portal.</p>
+         <!-- <a href="https://eservices.elections.gov.lk/pages/myVoterRegistrationSearch.aspx" 
+          class="btn small" target="_blank">Open</a>-->
+          <a href="nic_instructions.html" class="btn small">Open</a>
+
+           
+        </div>
+
+        <div class="card service" tabindex="0">
+          <div class="lock">🔒</div>
+          <h3>Person Registration</h3>
+          <p>Register person details for the GN division and forum entries.</p>
+          <a href="register.html" class="btn small">Login to Open</a>
+        </div>
+
+        <!-- 🔹 Updated to open f.html -->
+        <div class="card service" tabindex="0">
+          <div class="lock">🔒</div>
+          <h3>Issuing Character Certificates</h3>
+          <p>Generate a character certificate from entered person details.</p>
+          <a href="register.html" class="btn small">Login to Open</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 🟧 DOWNLOADS -->
+    <section id="downloads" class="downloads">
+      <h2>Downloads</h2>
+      <div class="download-grid">
+        <div class="download-item">
+          <a href="viewer.html?file=id.pdf" target="_blank">
+            <span class="download-icon">⬇️</span> Application for National Identity Card
+          </a>
+        </div>
+        <div class="download-item">
+          <a href="viewer.html?file=form_02.pdf" target="_blank">
+            <span class="download-icon">⬇️</span> Verification of Temporary Residential Address
+          </a>
+        </div>
+        <div class="download-item">
+          <a href="viewer.html?file=form_03.pdf" target="_blank">
+            <span class="download-icon">⬇️</span> Specimens of Death Certificate
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 🟦 INFO CENTER -->
+    <section class="info-center">
+      <h2>Grama Niladhari Information Center</h2>
+      <p>View administrative GN information across districts and divisions.</p>
+      <a href="v.html" target="_blank" class="btn primary small">View</a>
+    </section>
+  </main>
+
+  <!-- 🔷 FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-section left">
+      <p>Related Links</p>
+      <ul>
+        <li><a href="https://pubad.gov.lk/" target="_blank">Ministry of Public Administration</a></li>
+        <li><a href="https://drp.gov.lk/" target="_blank">Department For Registration Of Persons</a></li>
+        <li><a href="https://elections.gov.lk/" target="_blank">Election Commission of Sri Lanka</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-section center">
+      <img src="logo_long.png" alt="GNOS Logo" class="footer-logo" />
+      <div class="footer-brand">
+        <div class="footer-desc">Grama Niladhari Online Services<br>Sri Lanka</div>
+      </div>
+    </div>
+
+    <div class="footer-section right">
+      <p class="footer-contact-title">Contact</p>
+      <ul class="footer-contact-list">
+        <li><span>📞</span> +94 11 123 4567</li>
+        <li><span>✉️</span> info@gnos.gov.lk</li>
+        <li><span>📠</span> +94 11 765 4321</li>
+      </ul>
+      <p class="footer-update">Last Update: <span id="lastUpdate"></span></p>
+    </div>
+  </footer>
+
+  <!-- 🔹 JavaScript Section -->
+  <script>
+
+    
+  const firebaseConfig = {
+    apiKey: "AIzaSyATq733SgOlw3uX3hV2rNx8skuxm7aeppA",
+    authDomain: "login-page-new-3780c.firebaseapp.com",
+    projectId: "login-page-new-3780c",
+    storageBucket: "login-page-new-3780c.appspot.com",
+    messagingSenderId: "106026228924",
+    appId: "1:106026228924:web:3e14f52a3fe928c06644b9"
+  };
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+
+  const auth = firebase.auth();
+firebase.auth().onAuthStateChanged(user => {
+  if (!user) {
+    document.querySelectorAll('.card.service').forEach(card => {
+      const lockIcon = card.querySelector('.lock');
+      if (lockIcon && lockIcon.textContent === '🔒') {
+        const link = card.querySelector('a.btn.small');
+        if (link) {
+          link.style.pointerEvents = 'none';
+          link.style.opacity = '0.5';
+          link.textContent = 'Login required';
+        }
+      }
+    });
+  }
+  // else allow full access to all services
+});
+
+
+  firebase.auth().getRedirectResult().then((result) => {
+  if (result.user) {
+    // User logged in successfully; update UI accordingly
+  }
+}).catch((error) => {
+  // Handle errors here
+});
+
+
+    // ✅ Profile button click with blink + redirect
+    const profileBtn = document.getElementById('profileBtn');
+    profileBtn.addEventListener('click', () => {
+      profileBtn.classList.add('blink');
+      setTimeout(() => {
+        window.location.href = 'p.html';
+      }, 600);
+    });
+
+    //auth.onAuthStateChanged(user => {
+   // if (!user) {
+      // Not logged in → redirect to login page
+   //   alert("You must be logged in to access this page!");
+   //   window.location.href = "l3.html";
+   // } 
+    // else: user is logged in, allow access
+ // });
+
+    // ✅ Last updated date
+    document.getElementById('lastUpdate').textContent =
+      new Date().toLocaleDateString();
+
+    // ✅ Slideshow images auto-rotate
+    const slides = document.querySelectorAll('.carousel-img');
+    let current = 0;
+    setInterval(() => {
+      slides[current].classList.remove('active');
+      current = (current + 1) % slides.length;
+      slides[current].classList.add('active');
+    }, 3500);
+
+    // ✅ Language switcher
+    const translations = {
+      si: {
+        title: "ග්‍රාම නිලධාරී මාර්ගගත සේවා",
+        subtitle: "ප්‍රධාන සේවාවන් ඩිජිටල් ක්‍රමයට ක්‍රියාත්මක කිරීම සඳහා නිල වේදිකාවක්",
+        about: "පද්ධතිය ... ශ්‍රී ලංකාව."
+      },
+      ta: {
+        title: "கிராம நிலதாரி ஆன்லைன் சேவைகள்",
+        subtitle: "முக்கிய கிராம நிலதாரி சேவைகளை எளிதாக்குவதற்கான அதிகாரப்பூர்வ தளம்",
+      },
+      en: {
+        title: "Grama Niladhari Online Services",
+        subtitle: "An Official Portal To Streamline Key GN Services",
+      }
+    };
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const lang = btn.dataset.lang;
+        document.querySelector('[data-i18n="title"]').textContent = translations[lang].title;
+        document.querySelector('[data-i18n="subtitle"]').textContent = translations[lang].subtitle;
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Character Certificate Form</title>
+
+<!-- CSS (keeps your original look) -->
+<style>
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8fafc;
+    margin: 0;
+    padding: 0;
+  }
+  .certificate-container {
+    width: 90%;
+    max-width: 800px;
+    background: #fff;
+    margin: 40px auto;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  h2 { text-align: center; margin-bottom: 25px; color: #1f2937; }
+  label { display: block; margin-top: 15px; font-weight: 600; }
+  input, textarea { width: 100%; padding: 10px; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 5px; font-size: 14px; }
+  textarea { height: 70px; resize: vertical; }
+  .btn-container { text-align: center; margin-top: 25px; }
+  .btn { background-color: #2563eb; color: white; border: none; padding: 10px 22px; border-radius: 6px; cursor: pointer; font-size: 16px; margin: 5px; transition: 0.3s; }
+  .btn:hover { background-color: #1e40af; }
+  .btn-yellow { background-color: #facc15; color: #1e293b; }
+  .btn-yellow:hover { background-color: #eab308; }
+  #message { text-align: center; margin-top: 15px; font-weight: bold; }
+  .footer { text-align: center; font-size: 13px; margin-top: 20px; color: #64748b; }
+
+  /* Certificate Preview */
+  #certPreview { display: none; width: 210mm; height: 287mm; margin: 0 auto; border: 2px solid #0666CC; border-radius: 5px; background: #fff; box-sizing: border-box; position: relative; overflow: auto; padding: 8px; }
+  .cert-divider { border: 1px solid #0666CC; width: 95%; margin: 20px auto; }
+  .signature-row { display:flex; justify-content:space-between; margin-top:60px; }
+  #certPreview footer { position: absolute; bottom:8mm; width:100%; text-align:center; font-size:11px; color:#444; }
+
+  /* Search UI */
+  .search-container { width: 90%; max-width: 800px; background: #fff; margin: 0 auto 40px; padding: 20px 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; }
+  .search-container input { padding: 10px; width: 60%; font-size: 16px; border-radius: 5px; border: 1px solid #cbd5e1; margin-right: 10px; }
+  .search-container button { padding: 10px 20px; font-size: 16px; border: none; border-radius: 6px; background-color: #2563eb; color: white; cursor: pointer; transition: 0.3s; }
+  .search-container button:hover { background-color: #1e40af; }
+  .search-results { margin-top: 20px; font-size: 16px; text-align:left; }
+  .search-result-link { display: inline-block; margin-top: 10px; padding: 8px 15px; background-color: #facc15; color: #1e293b; border-radius: 6px; cursor: pointer; text-decoration: none; font-weight: 600; margin-right: 8px; }
+  .search-result-link:hover { background-color: #eab308; }
+</style>
+
+<!-- jsPDF UMD -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- Firebase (Firestore) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyATq733SgOlw3uX3hV2rNx8skuxm7aeppA",
+    authDomain: "login-page-new-3780c.firebaseapp.com",
+    projectId: "login-page-new-3780c",
+    storageBucket: "login-page-new-3780c.appspot.com",
+    messagingSenderId: "106026228924",
+    appId: "1:106026228924:web:3e14f52a3fe928c06644b9"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  window._firestore = { db, collection, addDoc, query, where, getDocs };
+</script>
+</head>
+<body>
+
+<header class="topbar"><img src="logo.jpg" alt="logo" style="height:40px; margin:20px"/></header>
+
+<!-- Search UI -->
+<div class="search-container">
+  <h3>Search Certificate by NIC</h3>
+  <input id="searchNIC" type="text" placeholder="Enter NIC number" />
+  <button id="searchBtn">Search</button>
+  <div id="searchResults" class="search-results"></div>
+</div>
+
+<!-- Certificate Preview -->
+<div id="certPreview">
+  <div id="certText"></div>
+</div>
+
+<!-- Generator form -->
+<div class="certificate-container">
+  <h2>Character Certificate Form</h2>
+  <form id="certForm">
+    <label>Full Name</label>
+    <input type="text" id="name" placeholder="Enter full name" required />
+
+    <label>National Identity Card No</label>
+    <input type="text" id="nic" placeholder="Enter NIC number" required />
+
+    <label>Address</label>
+    <input type="text" id="address" placeholder="Enter address" required />
+
+    <label>GN Division</label>
+    <input type="text" id="division" placeholder="Enter GN Division" required />
+
+    <label>Purpose of Certificate</label>
+    <textarea id="purpose" placeholder="Enter purpose of certificate"></textarea>
+
+    <label>Date</label>
+    <input type="date" id="date" required />
+
+    <label>Grama Niladhari Name</label>
+    <input type="text" id="gn_name" placeholder="Enter GN name" />
+
+    <label>Division Number</label>
+    <input type="text" id="division_no" placeholder="Enter division number" />
+
+    <label>Telephone (Optional)</label>
+    <input type="tel" id="telephone" placeholder="Enter telephone number" />
+
+    <div class="btn-container">
+      <button type="submit" class="btn btn-generate">Generate Certificate</button>
+      <button type="button" class="btn btn-yellow" id="viewBtn">View</button>
+    </div>
+  </form>
+
+  <div id="message"></div>
+</div>
+
+<div class="footer">
+  © 2025 Grama Niladhari Online Services (GNOS)
+</div>
+
+<script>
+(async () => {
+  async function fetchImageAsDataUrl(src) {
+    try {
+      const res = await fetch(src, {cache: "no-store"});
+      if (!res.ok) throw new Error('image load failed');
+      const blob = await res.blob();
+      return await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    } catch (err) {
+      return null;
+    }
+  }
+
+  const firestore = window._firestore || null;
+
+  function saveCertificateLocal(nic, serialNumber, pdfDataUrl) {
+    const key = 'certificates_local_v1';
+    const all = JSON.parse(localStorage.getItem(key) || '{}');
+    if (!all[nic]) all[nic] = [];
+    all[nic].push({ serialNumber, pdfDataUrl, createdAt: new Date().toISOString() });
+    localStorage.setItem(key, JSON.stringify(all));
+  }
+
+  function getCertificatesLocal(nic) {
+    const key = 'certificates_local_v1';
+    const all = JSON.parse(localStorage.getItem(key) || '{}');
+    return all[nic] || [];
+  }
+
+  const form = document.getElementById('certForm');
+  const viewBtn = document.getElementById('viewBtn');
+  const certPreview = document.getElementById('certPreview');
+  const certText = document.getElementById('certText');
+  const messageDiv = document.getElementById('message');
+  const searchBtn = document.getElementById('searchBtn');
+  const searchNICInput = document.getElementById('searchNIC');
+  const searchResultsDiv = document.getElementById('searchResults');
+
+  const logoDataUrl = await fetchImageAsDataUrl('logo.jpg') || await fetchImageAsDataUrl('logo_long.png') || null;
+
+  function sanitizeForSerial(s) {
+    if (!s) return '';
+    return s.toString().trim().toLowerCase().replace(/\s+/g,'').replace(/[^a-z0-9_-]/g,'');
+  }
+  function firstName(full) {
+    if (!full) return '';
+    return full.trim().split(/\s+/)[0].toLowerCase();
+  }
+
+  function renderCertificatePreview(data) {
+    const { name, nic, address, division, purpose, date, gn_name } = data;
+    return `
+      <div style="width:210mm; height:287mm; padding:15mm; box-sizing:border-box; border:1px solid #0666CC; background:#fff; font-family:Times New Roman, serif; position:relative;">
+        <div style="text-align:center;">
+          <img src="logo_long.png" alt="Logo" style="height:50px; margin-bottom:5px;">
+          <h3 style="color:#0666CC; margin:2px 0;">Ministry of Home Affairs</h3>
+          <h3 style="color:#0666CC; margin:2px 0;">Office of the Grama Niladhari</h3>
+          <hr style="border:1px solid #0666CC; width:90%; margin:10px auto;">
+        </div>
+
+        <h2 style="text-align:center; margin:20px 0;">CHARACTER CERTIFICATE</h2>
+
+        <p style="margin:0 25mm; text-align:justify; line-height:1.6; font-size:14px;">
+          This is to certify that <b>${name}</b> (NIC: <b>${nic}</b>), residing at ${address}, under <b>${division}</b> GN Division, is known to me personally and has been found to be of good conduct and moral character.
+        </p>
+
+        ${purpose ? `<p style="margin:20px 25mm; font-style:italic;"><b>Purpose:</b> ${purpose}</p>` : ''}
+
+        <div class="signature-row" style="display:flex; justify-content:space-between; margin-top:80px; padding:0 25mm;">
+          <div class="left" style="font-size:13px;">Date: ${date}</div>
+          <div class="right" style="text-align:right; font-size:13px;">
+            ........................................<br>
+            ${gn_name || 'Grama Niladhari'}<br>
+            Signature
+          </div>
+        </div>
+
+        <footer style="position:absolute; bottom:15mm; width:100%; text-align:center; font-size:11px; color:#444;">
+          This certificate is issued by the Grama Niladhari office for official purposes only.
+        </footer>
+      </div>
+    `;
+  }
+
+  // --- GENERATE handler ---
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    messageDiv.textContent = '';
+    try {
+      const name = document.getElementById('name').value.trim();
+      const nic = document.getElementById('nic').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const division = document.getElementById('division').value.trim() || '—';
+      const purpose = document.getElementById('purpose').value.trim() || '—';
+      const dateInput = document.getElementById('date').value;
+      const date = dateInput ? new Date(dateInput).toLocaleDateString() : new Date().toLocaleDateString();
+      const gn_name = document.getElementById('gn_name').value.trim() || '—';
+      const division_no = document.getElementById('division_no').value.trim() || '—';
+      const telephone = document.getElementById('telephone').value.trim() || '—';
+
+      if (!name || !nic) { alert('Please fill at least Name and NIC.'); return; }
+
+      const serialNo = `${sanitizeForSerial(nic)}_${sanitizeForSerial(firstName(name))}_${sanitizeForSerial(division)}`;
+
+      const jsPDFCtor = window.jspdf && window.jspdf.jsPDF ? window.jspdf.jsPDF : null;
+      if (!jsPDFCtor) throw new Error('jsPDF not loaded');
+      const doc = new jsPDFCtor({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+      if (logoDataUrl) {
+        try {
+          const mime = logoDataUrl.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,/);
+          const type = mime ? mime[1] : 'image/png';
+          const fmt = type.includes('jpeg') || type.includes('jpg') ? 'JPEG' : 'PNG';
+          doc.addImage(logoDataUrl, fmt, 80, 10, 50, 15);
+        } catch (imgErr) { console.warn('logo addImage failed:', imgErr); }
+      }
+
+      doc.setDrawColor(6, 102, 204);
+      doc.setTextColor(6, 102, 204);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(14);
+      doc.text('Ministry of Home Affairs', 105, 35, { align: 'center' });
+      doc.text('Office of the Grama Niladhari', 105, 42, { align: 'center' });
+      doc.line(20, 48, 190, 48);
+      doc.setTextColor(0, 0, 0);
+      doc.setFont('times', 'bold');
+      doc.setFontSize(14);
+      doc.text('CHARACTER CERTIFICATE', 105, 65, { align: 'center' });
+      doc.setFont('times', 'normal');
+      const body = `This is to certify that Mr/Ms. ${name} (NIC: ${nic}), residing at ${address}, under ${division} GN Division, is known to me personally and has been found to be of good conduct and moral character.`;
+      doc.text(doc.splitTextToSize(body,170), 20, 90);
+      if (purpose) {
+        doc.setFont('times','italic');
+        doc.text(doc.splitTextToSize('Purpose: ' + purpose,170), 20, 120);
+        doc.setFont('times','normal');
+      }
+      doc.setFontSize(10);
+      doc.text(`Serial No: ${serialNo}`, 20, 140);
+      doc.setFontSize(12);
+      doc.text(`Date: ${date}`, 20, 150);
+      doc.text('......................................................', 140, 140);
+      doc.text('Grama Niladhari', 155, 148);
+      doc.text('Signature', 163, 155);
+      doc.setFontSize(10);
+      doc.text('This certificate is issued by the Grama Niladhari office for official purposes only.', 105, 285, { align: 'center' });
+
+      const pdfDataUrl = doc.output('datauristring');
+      const record = { name, nic: nic.toLowerCase(), address, division, purpose, date, gn_name, division_no, telephone, serialNo, pdfBase64: pdfDataUrl, createdAt: new Date().toISOString() };
+
+      let savedToFirestore = false;
+      try {
+        if (window._firestore && window._firestore.db) {
+          const certsRef = window._firestore.collection(window._firestore.db, 'certificates');
+          await window._firestore.addDoc(certsRef, record);
+          savedToFirestore = true;
+        }
+      } catch (fsErr) { savedToFirestore = false; saveCertificateLocal(nic.toLowerCase(), serialNo, pdfDataUrl); }
+
+      const fileName = `Character_Certificate_${serialNo}.pdf`;
+      messageDiv.innerHTML = `
+        ✅ Certificate generated! Serial No: <b>${serialNo}</b><br>
+        <a id="downloadLink" href="${pdfDataUrl}" download="${fileName}" class="search-result-link">Download PDF</a>
+        <button id="previewOpen" class="search-result-link" style="background:#2563eb;color:#fff;border:none;">Open Preview</button>
+      `;
+
+      document.getElementById('previewOpen').addEventListener('click', () => {
+        certText.innerHTML = renderCertificatePreview({ name, nic, address, division, purpose, date, gn_name });
+        certPreview.style.display = 'block';
+        certPreview.scrollIntoView({ behavior: 'smooth' });
+      });
+
+      alert('Certificate generated and saved' + (savedToFirestore ? ' to Firestore.' : ' locally (no Firestore).'));
+
+    } catch(err) { console.error(err); messageDiv.textContent = 'Error: '+err.message; }
+  });
+
+  // --- VIEW button ---
+  viewBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const data = {
+      name: document.getElementById('name').value.trim(),
+      nic: document.getElementById('nic').value.trim(),
+      address: document.getElementById('address').value.trim(),
+      division: document.getElementById('division').value.trim() || '—',
+      purpose: document.getElementById('purpose').value.trim() || '—',
+      date: document.getElementById('date').value ? new Date(document.getElementById('date').value).toLocaleDateString() : new Date().toLocaleDateString(),
+      gn_name: document.getElementById('gn_name').value.trim() || '—'
+    };
+    certText.innerHTML = renderCertificatePreview(data);
+    certPreview.style.display = 'block';
+    certPreview.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  // --- SEARCH functionality (fixed with Download button) ---
+  searchBtn.addEventListener('click', async () => {
+    const nic = searchNICInput.value.trim().toLowerCase();
+    searchResultsDiv.innerHTML = 'Searching...';
+    if (!nic) { searchResultsDiv.textContent = 'Enter NIC to search.'; return; }
+
+    let results = [];
+    try {
+      if (window._firestore && window._firestore.db) {
+        const certsRef = window._firestore.collection(window._firestore.db, 'certificates');
+        const q = window._firestore.query(certsRef, window._firestore.where('nic','==',nic));
+        const snap = await window._firestore.getDocs(q);
+        results = snap.docs.map(d=>d.data());
+      }
+    } catch (err) { console.warn('Firestore search failed:',err); }
+    results = results.concat(getCertificatesLocal(nic));
+
+    if (results.length === 0) { searchResultsDiv.textContent = 'No records found.'; return; }
+
+    searchResultsDiv.innerHTML = '';
+    results.forEach((rec, idx) => {
+      const container = document.createElement('div');
+      container.className = 'search-result-item';
+      container.style.marginBottom = '12px';
+      container.style.display = 'flex';
+      container.style.alignItems = 'center';
+      container.style.gap = '8px';
+
+      const info = document.createElement('span');
+      info.innerHTML = `<b>Serial:</b> ${rec.serialNo || rec.serialNumber || '—'} &nbsp; <b>Name:</b> ${rec.name || '—'}`;
+      container.appendChild(info);
+
+      // Download button
+      const downloadBtn = document.createElement('button');
+      downloadBtn.textContent = 'Download';
+      downloadBtn.className = 'search-result-link';
+      downloadBtn.style.backgroundColor = '#facc15';
+      downloadBtn.style.color = '#1e293b';
+      downloadBtn.style.border = 'none';
+      downloadBtn.addEventListener('click', () => {
+        const link = document.createElement('a');
+        link.href = rec.pdfBase64 || rec.pdfDataUrl;
+        link.download = `Certificate_${rec.serialNo || rec.serialNumber || idx + 1}.pdf`;
+        link.click();
+      });
+      container.appendChild(downloadBtn);
+
+      // Preview button
+      const previewBtn = document.createElement('button');
+      previewBtn.textContent = 'Preview';
+      previewBtn.className = 'search-result-link';
+      previewBtn.style.background = '#10b981';
+      previewBtn.style.color = '#fff';
+      previewBtn.style.border = 'none';
+      previewBtn.addEventListener('click', () => {
+        certText.innerHTML = renderCertificatePreview(rec);
+        certPreview.style.display = 'block';
+        certPreview.scrollIntoView({ behavior: 'smooth' });
+      });
+      container.appendChild(previewBtn);
+
+      searchResultsDiv.appendChild(container);
+    });
+  });
+
+  searchBtn.addEventListener('click', async () => {
+  const nic = searchNICInput.value.trim().toLowerCase();
+  searchResultsDiv.innerHTML = 'Searching...';
+  if (!nic) { searchResultsDiv.textContent = 'Enter NIC to search.'; return; }
+
+  let results = [];
+  try {
+    if (window._firestore && window._firestore.db) {
+      const certsRef = window._firestore.collection(window._firestore.db, 'certificates');
+      const q = window._firestore.query(certsRef, window._firestore.where('nic','==',nic));
+      const snap = await window._firestore.getDocs(q);
+      results = snap.docs.map(d => {
+        const data = d.data();
+        // Ensure we have PDF data and filename
+        if (!data.pdfBase64 && data.pdfDataUrl) data.pdfBase64 = data.pdfDataUrl;
+        data.originalFileName = `Character_Certificate_${data.serialNo || data.serialNumber}.pdf`;
+        return data;
+      });
+    }
+  } catch (err) { console.warn('Firestore search failed:', err); }
+
+  results = results.concat(getCertificatesLocal(nic).map((rec) => {
+    rec.originalFileName = `Character_Certificate_${rec.serialNumber}.pdf`;
+    return rec;
+  }));
+
+  if (results.length === 0) { searchResultsDiv.textContent = 'No records found.'; return; }
+
+  searchResultsDiv.innerHTML = '';
+  results.forEach((rec, idx) => {
+    const container = document.createElement('div');
+    container.className = 'search-result-item';
+    container.style.marginBottom = '12px';
+    container.style.display = 'flex';
+    container.style.alignItems = 'center';
+    container.style.gap = '8px';
+
+    const info = document.createElement('span');
+    info.innerHTML = `<b>Serial:</b> ${rec.serialNo || rec.serialNumber || '—'} &nbsp; <b>Name:</b> ${rec.name || '—'}`;
+    container.appendChild(info);
+
+    // Download button
+    const downloadBtn = document.createElement('button');
+    downloadBtn.textContent = 'Download';
+    downloadBtn.className = 'search-result-link';
+    downloadBtn.style.backgroundColor = '#facc15';
+    downloadBtn.style.color = '#1e293b';
+    downloadBtn.style.border = 'none';
+    downloadBtn.addEventListener('click', () => {
+      if (!rec.pdfBase64) {
+        alert('PDF not found for this record!');
+        return;
+      }
+      const link = document.createElement('a');
+      link.href = rec.pdfBase64; // exact PDF string
+      link.download = rec.originalFileName;
+      link.click();
+    });
+    container.appendChild(downloadBtn);
+
+    // Preview button
+    const previewBtn = document.createElement('button');
+    previewBtn.textContent = 'Preview';
+    previewBtn.className = 'search-result-link';
+    previewBtn.style.background = '#10b981';
+    previewBtn.style.color = '#fff';
+    previewBtn.style.border = 'none';
+    previewBtn.addEventListener('click', () => {
+      certText.innerHTML = renderCertificatePreview(rec);
+      certPreview.style.display = 'block';
+      certPreview.scrollIntoView({ behavior: 'smooth' });
+    });
+    container.appendChild(previewBtn);
+
+    searchResultsDiv.appendChild(container);
+  });
+});
+
+
+})();
+</script>
+</body>
+</html>
+
+
+
+
+
